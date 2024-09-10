@@ -9,8 +9,10 @@ app = FastAPI()
 # Configure CORS to allow requests from http://localhost:3000
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], 
-    
+    allow_origins=["http://localhost:3000", "https://reaction-bc.vercel.app"],  # Allow both local and deployed origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
 # Define the input data model
