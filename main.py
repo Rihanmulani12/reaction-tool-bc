@@ -6,13 +6,20 @@ from skopt.space import Real
 
 app = FastAPI()
 
-# Configure CORS to allow requests from http://localhost:3000
+origins = [
+    "http://localhost",
+    "http://localhost:3000/",
+    "http://localhost:8000",
+    "http://localhost:5173/",
+    "http://localhost:5173"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://reaction-bc.vercel.app"],  # Allow both local and deployed origins
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["GET", "POST"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # Define the input data model
