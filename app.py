@@ -4,26 +4,31 @@ from fastapi.middleware.cors import CORSMiddleware
 from skopt import gp_minimize
 from skopt.space import Real
 
+# Create FastAPI app
+app = FastAPI()
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
 
 origins = [
-    "http://localhost",
-    "https://reaction-bc.vercel.app/"
-    "http://localhost:3000/",
-    "http://localhost:8000",
     "http://localhost:5173/",
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://localhost:8080",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Define the input data model
+
+
+# Define the input data model for chemical reaction parameters
 class ReactionParams(BaseModel):
     temperature: float
     pressure: float
@@ -37,7 +42,7 @@ def objective_function(params):
     yield_value = -(temperature - 70) ** 2 - (pressure - 50) ** 2 - (concentration - 1) ** 2 - (ph - 7) ** 2 - (catalyst - 0.1) ** 2
     return yield_value
 
-# Search space for the optimization
+# Define the search space for the optimization
 space = [
     Real(50, 100, name="temperature"),
     Real(10, 100, name="pressure"),
@@ -61,14 +66,21 @@ def track_progress(res):
         "yield": -res.func_vals[-1]  # Track the negative of the objective function
     })
 
+# Route for optimization POST request
 @app.post("/")
 def optimize_reaction(params: ReactionParams):
     # Clear intermediate results from previous runs
     global intermediate_results
     intermediate_results = []
 
-    # Run the optimization with the tracking callback
-    result = gp_minimize(objective_function, space, n_calls=10, random_state=42, callback=[track_progress])
+    # Perform the optimization (blocking I/O should remain sync, FastAPI will handle concurrency)
+    result = gp_minimize(
+        objective_function, 
+        space, 
+        n_calls=10, 
+        random_state=42, 
+        callback=[track_progress]
+    )
 
     # Return the intermediate results and the final optimized values
     return {
@@ -81,6 +93,7 @@ def optimize_reaction(params: ReactionParams):
         "iterations": intermediate_results
     }
 
+
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def main():
+    return {"message": "Hello World"}
