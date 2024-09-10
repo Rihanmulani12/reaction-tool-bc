@@ -9,10 +9,8 @@ app = FastAPI()
 # Configure CORS to allow requests from http://localhost:3000
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # No trailing slash
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_origins=["http://localhost:3000"], 
+    
 )
 
 # Define the input data model
