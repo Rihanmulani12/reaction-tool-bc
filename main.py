@@ -72,3 +72,7 @@ def optimize_reaction(params: ReactionParams):
         "optimal_yield": -result.fun,
         "iterations": intermediate_results
     }
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
