@@ -8,6 +8,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
+    "https://reaction-bc.vercel.app/"
     "http://localhost:3000/",
     "http://localhost:8000",
     "http://localhost:5173/",
