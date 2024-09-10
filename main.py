@@ -4,17 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from skopt import gp_minimize
 from skopt.space import Real
 
-
-
-
-
 app = FastAPI()
-# prisma = Prisma()
 
-# Configure CORS to allow all origins, methods, and headers
+# Configure CORS to allow requests from http://localhost:3000
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000/"],
+    allow_origins=["http://localhost:3000"],  # No trailing slash
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
     allow_headers=["*"],  # Allows all headers
